@@ -1,0 +1,31 @@
+name: Fetch and rebase
+description: Fetch upstream repo and rebase local changes
+author: paolo-pisati
+branding:
+  icon: git-pull-request
+  color: green
+
+inputs:
+  upstream:
+    description: Fully qualified upstream repo URL
+    required: true
+  branch:
+    description: Upstream branch
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - run: |
+        set -ex;
+
+        UPSTREAM=${{ inputs.upstream }};
+        git remote add upstream $UPSTREAM;
+
+        git fetch upstream ${{ inputs.branch }}
+
+        git config --local user.email "github-actions-bot@users.noreply.github.com";
+        git config --local user.name  "GitHub Actions";
+
+        git rebase upstream/${{ inputs.branch }};
+      shell: bash
